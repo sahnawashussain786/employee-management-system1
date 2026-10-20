@@ -52,7 +52,7 @@ const navItems = [
 ];
 
 export default function Layout() {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const api = useApi();
   const location = useLocation();
   const navigate = useNavigate();
@@ -68,24 +68,17 @@ export default function Layout() {
   }, [api]);
 
   useEffect(() => {
-    api
-      .get('/api/auth/me', { auth: false })
+    if (token) {
+      api
+        .get('/api/leaves/calendar/upcoming?mine=true')
       .then((res) => {
-        setNotifCount(res.data?.notifications?.length || 0);
-      })
-      .catch(() => {});
-  }, [api]);
-
-  useEffect(() => {
-    api
-      .get('/api/leaves/calendar/upcoming?mine=true')
-      .then((res) => {
+        setNotifCount(res.data?.data?.length || 0);
         if (res.data?.data) {
           setNotifications(
             res.data.data.slice(0, 5).map((l) => ({
               id: l._id,
               title: 'Leave: ' + l.leaveType?.name,
-              message: `${l.employee?.fullName}: ${dayjs(l.startDate).format('MMM D')} – ${dayjs(l.endDate).format('MMM D')}`,
+              message: `${l.employee?.fullName}: ${dayjs(l.startDate).format('MMM D')} – ${dayjs(l.endDate).format('MMM')}`,
               type: 'leave',
               link: '/leaves',
               read: false,
@@ -94,7 +87,8 @@ export default function Layout() {
         }
       })
       .catch(() => {});
-  }, [api]);
+    }
+  }, [api, token]);
 
   const handleLogout = async () => {
     await logout();
@@ -190,9 +184,9 @@ export default function Layout() {
       </aside>
 
       {/* Main content area */}
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col lg:ml-[260px]">
         {/* Top header */}
-        <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 lg:px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 lg:px-6 shadow-sm">
           <div className="flex items-center gap-4">
             <button
               className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden"
@@ -230,7 +224,7 @@ export default function Layout() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-4 lg:p-6">
+        <main className="flex-1 overflow-x-hidden p-4 lg:pl-[260px]">
           <Outlet />
         </main>
       </div>

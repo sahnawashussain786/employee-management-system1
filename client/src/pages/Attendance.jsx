@@ -105,6 +105,17 @@ export default function Attendance() {
   for (let i = 0; i < firstDay; i++) calendarDays.push(null);
   for (let d = 1; d <= daysInMonth; d++) calendarDays.push(d);
 
+  const statusColors = {
+    present: 'bg-emerald-500',
+    late: 'bg-amber-500',
+    'work-from-home': 'bg-blue-500',
+    'half-day': 'bg-yellow-500',
+    absent: 'bg-red-500',
+    leave: 'bg-purple-500',
+    holiday: 'bg-orange-500',
+    'business-trip': 'bg-indigo-500',
+  };
+
   const getRecordForDate = (day) => {
     const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     return records.find((r) => dayjs(r.date).format('YYYY-MM-DD') === dateStr);
