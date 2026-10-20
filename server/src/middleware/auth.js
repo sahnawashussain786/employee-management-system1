@@ -23,7 +23,7 @@ export const protect = asyncHandler(async (req, res, next) => {
 
   const user = await User.findById(payload.sub).populate({
     path: 'employee',
-    select: 'firstName lastName fullName empId job department photo email',
+    select: 'firstName lastName fullName empId job photo email',
     populate: { path: 'job.department', select: 'name code' },
   });
 

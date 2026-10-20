@@ -32,8 +32,8 @@ const EMPLOYEE_PUBLIC_FIELDS =
 async function userPayload(user) {
   const populated = await User.findById(user._id).populate({
     path: 'employee',
-    select: `${EMPLOYEE_PUBLIC_FIELDS} department`,
-    populate: { path: 'job.department department', select: 'name code' },
+    select: 'firstName lastName fullName email phone gender dob photo job department skills empId',
+    populate: { path: 'job.department', select: 'name code' },
   });
   return populated;
 }
