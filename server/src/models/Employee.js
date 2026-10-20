@@ -107,7 +107,7 @@ employeeSchema.virtual('ctc').get(function ctc() {
     (this.salary?.hra || 0) +
     (this.salary?.allowances || []).reduce((sum, a) => sum + (a.amount || 0), 0);
   return monthly * 12;
-};
+});
 
 employeeSchema.virtual('monthlyGross').get(function monthlyGross() {
   return (
